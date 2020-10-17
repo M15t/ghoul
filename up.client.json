@@ -1,0 +1,45 @@
+{
+  "name": "ghoul-api",
+  "profile": "client_apex_up",
+  "regions": ["ap-southeast-1"],
+  "environment": {
+    "DEBUG": "true",
+    "DB_LOG": "false"
+  },
+  "lambda": {
+    "policy": [
+      {
+        "Effect": "Allow",
+        "Resource": "*",
+        "Action": [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+      }
+    ],
+    "vpc": {
+      "subnets": ["subnet-xxxxxx1", "subnet-xxxxxx2"],
+      "security_groups": ["sg-xxxxxx1"]
+    }
+  },
+  "stages": {
+    "staging": {
+      "domain": "ghoul-api-stg.client.com",
+      "zone": false
+    },
+    "production": {
+      "domain": "ghoul-api.client.com",
+      "zone": false
+    }
+  },
+  "error_pages": {
+    "disable": true
+  },
+  "hooks": {
+    "build": "AWS_REGION=ap-southeast-1 AWS_LAMBDA_FUNCTION_NAME=ghoul-api make build.linux specs",
+    "clean": "make clean"
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Invocations",
+            "FunctionName",
+            "ghoul-api",
+            "Resource",
+            "ghoul-api:production",
+            { "stat": "Sum", "label": "API" }
+          ],
+          [
+            ".",
+            ".",
+            ".",
+            "ghoul_housekeeper",
+            "Resource",
+            "ghoul_housekeeper:production",
+            { "stat": "Sum", "label": "House Keeper" }
+          ]
+        ],
+        "region": "ap-southeast-2",
+        "view": "timeSeries",
+        "stacked": false,
+        "title": "Invocations",
+        "legend": {
+          "position": "bottom"
+        },
+        "period": 300
+      }
+    },
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "ghoul-api",
+            "Resource",
+            "ghoul-api:production",
+            {
+              "id": "apierrors",
+              "stat": "Sum",
+              "color": "#d62728",
+              "label": "API Errors"
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            ".",
+            ".",
+            {
+              "id": "apiinvocations",
+              "stat": "Sum",
+              "visible": false,
+              "color": "#7f7f7f",
+              "label": "API Invocations"
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * apierrors / apiinvocations",
+              "label": "API Success rate (%)",
+              "id": "apiavailability",
+              "yAxis": "right"
+            }
+          ],
+          [
+            "AWS/Lambda",
+            "Errors",
+            "FunctionName",
+            "ghoul_housekeeper",
+            "Resource",
+            "ghoul_housekeeper:production",
+            {
+              "id": "housekeepererrors",
+              "stat": "Sum",
+              "color": "#ff7f0e",
+              "label": "House Keeper Errors"
+            }
+          ],
+          [
+            ".",
+            "Invocations",
+            ".",
+            ".",
+            {
+              "id": "housekeeperinvocations",
+              "stat": "Sum",
+              "visible": false,
+              "color": "#7f7f7f",
+              "label": "House Keeper Invocations"
+            }
+          ],
+          [
+            {
+              "expression": "100 - 100 * housekeepererrors / housekeeperinvocations",
+              "label": "House Keeper Success rate (%)",
+              "id": "housekeeperavailability",
+              "yAxis": "right",
+              "color": "#1f77b4"
+            }
+          ]
+        ],
+        "region": "ap-southeast-2",
+        "title": "Error count and success rate (%)",
+        "yAxis": {
+          "right": {
+            "max": 100,
+            "showUnits": false,
+            "label": "Percentage"
+          }
+        },
+        "view": "timeSeries",
+        "stacked": false,
+        "period": 300
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 6,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Duration",
+            "FunctionName",
+            "ghoul_housekeeper",
+            "Resource",
+            "ghoul_housekeeper:production",
+            { "stat": "Minimum", "label": "Minimum", "color": "#2ca02c" }
+          ],
+          [
+            "...",
+            { "stat": "Average", "label": "Average", "color": "#1f77b4" }
+          ],
+          ["...", { "stat": "Maximum", "label": "Maximum", "color": "#ff7f0e" }]
+        ],
+        "region": "ap-southeast-2",
+        "view": "timeSeries",
+        "stacked": false,
+        "title": "House Keeper Duration",
+        "period": 300
+      }
+    },
+    {
+      "type": "metric",
+      "x": 12,
+      "y": 0,
+      "width": 12,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [
+            "AWS/Lambda",
+            "Duration",
+            "FunctionName",
+            "ghoul-api",
+            "Resource",
+            "ghoul-api:production",
+            { "stat": "Minimum", "label": "Minimum", "color": "#2ca02c" }
+          ],
+          [
+            "...",
+            { "stat": "Average", "label": "Average", "color": "#1f77b4" }
+          ],
+          ["...", { "stat": "Maximum", "label": "Maximum", "color": "#ff7f0e" }]
+        ],
+        "region": "ap-southeast-2",
+        "view": "timeSeries",
+        "stacked": false,
+        "title": "API Duration",
+        "period": 300
+      }
+    },
+    {
+      "type": "log",
+      "x": 0,
+      "y": 12,
+      "width": 24,
+      "height": 6,
+      "properties": {
+        "query": "SOURCE '/aws/lambda/ghoul-api' | filter fields.stage = 'production'\n| filter message like /(?i)(\"status\":(5\\d\\d|401|403))/\n| fields @timestamp, @message\n| sort @timestamp desc\n| limit 25",
+        "region": "ap-southeast-2",
+        "stacked": false,
+        "title": "API Errors",
+        "view": "table"
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+# Compiled Object files, Static and Dynamic libs (Shared Objects)
+*.o
+*.a
+*.so
+.DS_Store
+
+.pid
+profile.out
+coverage.out
+coverage-all.out
+
+/server
+/vendor
+/swaggerui
+*.local
+/up.json
+

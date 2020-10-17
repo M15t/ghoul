@@ -1,0 +1,16 @@
+{
+  "name": "ghoul",
+  "profile": "client_apex_up",
+  "description": "",
+  "memory": 512,
+  "timeout": 180,
+  "role": "arn:aws:iam::777982199115:role/ghoul_lambda_function",
+  "environment": {
+    "CONFIG_NAME": "ghoul-api",
+    "CONFIG_STAGE": "staging"
+  },
+  "vpc": {
+    "subnets": ["subnet-00dc63968d398dc39", "subnet-0ab92bcd0555d44c1"],
+    "securityGroups": ["sg-0734784e7701a77b0"]
+  }
+}
