@@ -11,11 +11,6 @@ func New(dialect, dbPsn string, enableLog bool) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	_, err = db.Raw("SELECT 1").Rows()
-	if err != nil {
-		return nil, err
-	}
-
 	db.LogMode(enableLog == true)
 
 	return db, nil
