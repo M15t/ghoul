@@ -49,10 +49,3 @@ echo "$ apex -e $ENV ${ARGS[@]}"
 # echo "ALIAS: $ALIAS"
 echo ""
 apex -e $ENV ${ARGS[@]}
-
-if [[ "$DEPLOYING" == "true" ]]; then
-  echo ""
-  echo "$ apex alias -e $ENV -v $ALIAS commit-$COMMIT"
-  echo ""
-  apex alias -e $ENV -v $ALIAS commit-$COMMIT
-fi
