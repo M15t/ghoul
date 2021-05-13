@@ -6,7 +6,7 @@ import (
 
 	dbutil "github.com/M15t/ghoul/pkg/util/db"
 	"github.com/fortytw2/dockertest"
-	_ "github.com/jinzhu/gorm/dialects/postgres" // DB adapter
+	_ "gorm.io/gorm/dialects/postgres" // DB adapter
 )
 
 func TestDatabase(t *testing.T) {

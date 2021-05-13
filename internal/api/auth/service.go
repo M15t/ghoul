@@ -5,7 +5,7 @@ import (
 
 	"github.com/M15t/ghoul/internal/model"
 	dbutil "github.com/M15t/ghoul/pkg/util/db"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // New creates new auth service

@@ -1,10 +1,11 @@
 package dbutil
 
 import (
-	"github.com/imdatngo/gowhere"
-	"github.com/jinzhu/gorm"
 	"reflect"
 	"strings"
+
+	"github.com/imdatngo/gowhere"
+	"gorm.io/gorm"
 )
 
 // NewDB creates new DB instance
@@ -43,6 +44,9 @@ type Intf interface {
 	Delete(db *gorm.DB, cond ...interface{}) error
 	// Exist checks whether there is record matching the given conditions.
 	Exist(db *gorm.DB, cond ...interface{}) (bool, error)
+	// CreateInBatches creates batch of new record on database.
+	// `input` must be a array non-nil pointer of the model. e.g: `input := []*model.User`
+	CreateInBatches(db *gorm.DB, input interface{}, batchSize int) error
 }
 
 // ListQueryCondition holds data used for db queries
@@ -67,7 +71,7 @@ func (cdb *DB) View(db *gorm.DB, output interface{}, cond ...interface{}) error 
 }
 
 // List returns list of records retrievable after filter & pagination if given.
-func (cdb *DB) List(db *gorm.DB, output interface{}, lq *ListQueryCondition, count *int) error {
+func (cdb *DB) List(db *gorm.DB, output interface{}, lq *ListQueryCondition, count *int64) error {
 	if lq != nil {
 		if lq.Filter != nil {
 			db = db.Where(lq.Filter.SQL(), lq.Filter.Vars()...)
@@ -130,8 +134,15 @@ func (cdb *DB) Delete(db *gorm.DB, cond ...interface{}) error {
 
 // Exist checks whether there is record matching the given conditions.
 func (cdb *DB) Exist(db *gorm.DB, cond ...interface{}) (bool, error) {
-	count := 0
+	var count int64
+	count = 0
 	where := ParseCond(cond...)
 	cdb.GDB = db.Model(cdb.Model).Where(where[0], where[1:]...).Count(&count)
 	return count > 0, cdb.GDB.Error
+}
+
+// CreateInBatches creates batch of new record on database.
+func (cdb *DB) CreateInBatches(db *gorm.DB, input interface{}) error {
+	cdb.GDB = db.CreateInBatches(input, 1000)
+	return cdb.GDB.Error
 }

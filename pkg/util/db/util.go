@@ -2,8 +2,9 @@ package dbutil
 
 import (
 	"fmt"
+
 	"github.com/imdatngo/gowhere"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // ParseCondWithConfig returns standard [sqlString, vars] format for query, powered by gowhere package (configurable version)

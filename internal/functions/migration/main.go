@@ -10,8 +10,8 @@ import (
 	dbutil "github.com/M15t/ghoul/internal/util/db"
 	"github.com/M15t/ghoul/pkg/util/crypter"
 	"github.com/M15t/ghoul/pkg/util/migration"
-	"github.com/jinzhu/gorm"
 	"gopkg.in/gormigrate.v1"
+	"gorm.io/gorm"
 )
 
 // EnablePostgreSQL: remove this and all tx.Set() functions bellow

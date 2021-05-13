@@ -3,10 +3,11 @@ package migration
 import (
 	"flag"
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"strings"
+
 	"github.com/labstack/gommon/log"
 	"gopkg.in/gormigrate.v1"
-	"strings"
+	"gorm.io/gorm"
 )
 
 var logger = log.New("migration")

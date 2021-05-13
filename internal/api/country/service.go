@@ -4,7 +4,7 @@ import (
 	"github.com/M15t/ghoul/internal/model"
 	"github.com/M15t/ghoul/pkg/rbac"
 	dbutil "github.com/M15t/ghoul/pkg/util/db"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // New creates new country application service

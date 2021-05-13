@@ -7,8 +7,8 @@ import (
 	"github.com/M15t/ghoul/pkg/rbac/casbinadapter"
 	"github.com/casbin/casbin"
 	"github.com/casbin/casbin/util"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
+	"gorm.io/gorm"
+	_ "gorm.io/gorm/dialects/sqlite"
 )
 
 func testGetPolicy(t *testing.T, e *casbin.Enforcer, res [][]string) {

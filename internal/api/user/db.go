@@ -3,7 +3,7 @@ package user
 import (
 	"github.com/M15t/ghoul/internal/model"
 	dbutil "github.com/M15t/ghoul/pkg/util/db"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 // NewDB returns a new user database instance

@@ -3,10 +3,10 @@ package dbutil
 import (
 	dbutil "github.com/M15t/ghoul/pkg/util/db"
 	"github.com/imdatngo/gowhere"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql" // DB adapter
+	"gorm.io/gorm"
+	_ "gorm.io/gorm/dialects/mysql" // DB adapter
 	// EnablePostgreSQL: remove the mysql package above, uncomment the following
-	// _ "github.com/jinzhu/gorm/dialects/postgres" // DB adapter
+	// _ "gorm.io/gorm/dialects/postgres" // DB adapter
 )
 
 // New creates new database connection to the database server
