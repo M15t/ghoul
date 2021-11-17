@@ -1,9 +1,10 @@
 package user
 
 import (
-	"github.com/M15t/ghoul/internal/model"
-	"github.com/M15t/ghoul/pkg/rbac"
-	dbutil "github.com/M15t/ghoul/pkg/util/db"
+	"ghoul/internal/model"
+	"ghoul/pkg/rbac"
+	dbutil "ghoul/pkg/util/db"
+
 	"gorm.io/gorm"
 )
 

@@ -1,8 +1,8 @@
 package rbac
 
 import (
-	"github.com/M15t/ghoul/internal/model"
-	"github.com/M15t/ghoul/pkg/rbac"
+	"ghoul/internal/model"
+	"ghoul/pkg/rbac"
 )
 
 // New returns new RBAC service

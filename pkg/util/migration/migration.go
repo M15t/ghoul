@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/go-gormigrate/gormigrate/v2"
 	"github.com/labstack/gommon/log"
-	"gopkg.in/gormigrate.v1"
 	"gorm.io/gorm"
 )
 

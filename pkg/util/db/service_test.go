@@ -4,9 +4,10 @@ import (
 	"database/sql"
 	"testing"
 
-	dbutil "github.com/M15t/ghoul/pkg/util/db"
+	dbutil "ghoul/pkg/util/db"
+
 	"github.com/fortytw2/dockertest"
-	_ "gorm.io/gorm/dialects/postgres" // DB adapter
+	_ "gorm.io/driver/postgres" // DB adapter
 )
 
 func TestDatabase(t *testing.T) {
@@ -33,9 +34,10 @@ func TestDatabase(t *testing.T) {
 		t.Error("Expected error")
 	}
 
-	dbLogTest, err := dbutil.New("postgres", "postgres://postgres:postgres@"+container.Addr+"/postgres?sslmode=disable", true)
+	_, err = dbutil.New("postgres", "postgres://postgres:postgres@"+container.Addr+"/postgres?sslmode=disable", true)
 	if err != nil {
 		t.Fatalf("Error establishing connection %v", err)
 	}
-	dbLogTest.Close()
+	// connection.Close() is not available for GORM 1.20.0
+	// dbLogTest.Close()
 }

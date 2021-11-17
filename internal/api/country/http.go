@@ -5,10 +5,11 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/M15t/ghoul/internal/model"
-	"github.com/M15t/ghoul/pkg/server"
-	dbutil "github.com/M15t/ghoul/pkg/util/db"
-	httputil "github.com/M15t/ghoul/pkg/util/http"
+	"ghoul/internal/model"
+	"ghoul/pkg/server"
+	dbutil "ghoul/pkg/util/db"
+	httputil "ghoul/pkg/util/http"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -22,7 +23,7 @@ type HTTP struct {
 type Service interface {
 	Create(*model.AuthUser, CreationData) (*model.Country, error)
 	View(*model.AuthUser, int) (*model.Country, error)
-	List(*model.AuthUser, *dbutil.ListQueryCondition, *int) ([]*model.Country, error)
+	List(*model.AuthUser, *dbutil.ListQueryCondition, *int64) ([]*model.Country, error)
 	Update(*model.AuthUser, int, UpdateData) (*model.Country, error)
 	Delete(*model.AuthUser, int) error
 }
@@ -183,7 +184,7 @@ type ListResp struct {
 	// example: [{"id": 1, "created_at": "2020-01-14T10:03:41Z", "updated_at": "2020-01-14T10:03:41Z", "name": "Singapore", "code": "SG", "phone_code": "+65"}]
 	Data []*model.Country `json:"data"`
 	// example: 1
-	TotalCount int `json:"total_count"`
+	TotalCount int64 `json:"total_count"`
 }
 
 func (h *HTTP) create(c echo.Context) error {
@@ -225,7 +226,7 @@ func (h *HTTP) list(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	count := 0
+	var count int64 = 0
 	resp, err := h.svc.List(h.auth.User(c), lq, &count)
 	if err != nil {
 		return err

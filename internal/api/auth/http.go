@@ -3,7 +3,8 @@ package auth
 import (
 	"net/http"
 
-	"github.com/M15t/ghoul/internal/model"
+	"ghoul/internal/model"
+
 	"github.com/labstack/echo/v4"
 )
 

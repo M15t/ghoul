@@ -42,16 +42,16 @@
 package main
 
 import (
-	"github.com/M15t/ghoul/config"
-	"github.com/M15t/ghoul/internal/api/auth"
-	"github.com/M15t/ghoul/internal/api/country"
-	"github.com/M15t/ghoul/internal/api/user"
-	"github.com/M15t/ghoul/internal/rbac"
-	dbutil "github.com/M15t/ghoul/internal/util/db"
-	_ "github.com/M15t/ghoul/internal/util/swagger" // Swagger stuffs
-	"github.com/M15t/ghoul/pkg/server"
-	"github.com/M15t/ghoul/pkg/server/middleware/jwt"
-	"github.com/M15t/ghoul/pkg/util/crypter"
+	"ghoul/config"
+	"ghoul/internal/api/auth"
+	"ghoul/internal/api/country"
+	"ghoul/internal/api/user"
+	"ghoul/internal/rbac"
+	dbutil "ghoul/internal/util/db"
+	_ "ghoul/internal/util/swagger" // Swagger stuffs
+	"ghoul/pkg/server"
+	"ghoul/pkg/server/middleware/jwt"
+	"ghoul/pkg/util/crypter"
 )
 
 func main() {
@@ -60,7 +60,8 @@ func main() {
 
 	db, err := dbutil.New(cfg.DbPsn, cfg.DbLog)
 	checkErr(err)
-	defer db.Close()
+	// connection.Close() is not available for GORM 1.20.0
+	// defer db.Close()
 
 	// Initialize HTTP server
 	e := server.New(&server.Config{

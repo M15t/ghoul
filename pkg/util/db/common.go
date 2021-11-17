@@ -34,7 +34,7 @@ type Intf interface {
 	// `output` must be a non-nil pointer of slice of the model. e.g: `data := []*model.User{}; db.List(dbconn, &data, nil, nil)`
 	// `lq` can be nil, then no filter & pagination are applied
 	// `count` can also be nil, then no extra query is executed to get the total count
-	List(db *gorm.DB, output interface{}, lq *ListQueryCondition, count *int) error
+	List(db *gorm.DB, output interface{}, lq *ListQueryCondition, count *int64) error
 	// Update updates data of the records matching the given conditions.
 	// `updates` could be a model struct or map[string]interface{}
 	// Note: DB.Model must be provided in order to get the correct model/table
@@ -142,7 +142,7 @@ func (cdb *DB) Exist(db *gorm.DB, cond ...interface{}) (bool, error) {
 }
 
 // CreateInBatches creates batch of new record on database.
-func (cdb *DB) CreateInBatches(db *gorm.DB, input interface{}) error {
-	cdb.GDB = db.CreateInBatches(input, 1000)
+func (cdb *DB) CreateInBatches(db *gorm.DB, input interface{}, batchSize int) error {
+	cdb.GDB = db.CreateInBatches(input, batchSize)
 	return cdb.GDB.Error
 }

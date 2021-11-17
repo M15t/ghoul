@@ -4,7 +4,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/M15t/ghoul/config"
+	"ghoul/config"
+
 	"github.com/stretchr/testify/assert"
 )
 

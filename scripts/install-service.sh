@@ -19,7 +19,7 @@ echo 'export PATH="$PATH:/usr/local/go/bin:$GOPATH/bin"' | sudo tee -a /home/gho
 echo 'export GO111MODULE=on' | sudo tee -a /home/ghoul/.profile
 
 # Clone & build server from source
-git clone https://github.com/M15t/ghoul.git ghoul
+git clone https://ghoul.git ghoul
 source /home/ghoul/.profile
 cd ghoul
 make build

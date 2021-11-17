@@ -1,11 +1,13 @@
 package auth
 
 import (
+	"log"
 	"net/http"
 	"time"
 
-	"github.com/M15t/ghoul/internal/model"
-	"github.com/M15t/ghoul/pkg/server"
+	"ghoul/internal/model"
+	"ghoul/pkg/server"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -34,6 +36,8 @@ func (s *Auth) LoginUser(u *model.User) (*model.AuthToken, error) {
 	if err != nil {
 		return nil, server.NewHTTPInternalError("Error updating user").SetInternal(err)
 	}
+
+	log.Println("Yoooooooooooooo")
 
 	return &model.AuthToken{AccessToken: token, TokenType: "bearer", ExpiresIn: expiresin, RefreshToken: refreshToken}, nil
 }

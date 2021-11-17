@@ -4,10 +4,11 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/M15t/ghoul/internal/model"
-	"github.com/M15t/ghoul/pkg/server"
-	dbutil "github.com/M15t/ghoul/pkg/util/db"
-	httputil "github.com/M15t/ghoul/pkg/util/http"
+	"ghoul/internal/model"
+	"ghoul/pkg/server"
+	dbutil "ghoul/pkg/util/db"
+	httputil "ghoul/pkg/util/http"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -21,7 +22,7 @@ type HTTP struct {
 type Service interface {
 	Create(*model.AuthUser, CreationData) (*model.User, error)
 	View(*model.AuthUser, int) (*model.User, error)
-	List(*model.AuthUser, *dbutil.ListQueryCondition, *int) ([]*model.User, error)
+	List(*model.AuthUser, *dbutil.ListQueryCondition, *int64) ([]*model.User, error)
 	Update(*model.AuthUser, int, UpdateData) (*model.User, error)
 	Delete(*model.AuthUser, int) error
 	Me(*model.AuthUser) (*model.User, error)
@@ -231,7 +232,7 @@ type PasswordChangeData struct {
 // swagger:model UserListResp
 type ListResp struct {
 	Data       []*model.User `json:"data"`
-	TotalCount int           `json:"total_count"`
+	TotalCount int64         `json:"total_count"`
 }
 
 func (h *HTTP) create(c echo.Context) error {
@@ -275,7 +276,7 @@ func (h *HTTP) list(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	count := 0
+	var count int64 = 0
 	resp, err := h.svc.List(h.auth.User(c), lq, &count)
 	if err != nil {
 		return err

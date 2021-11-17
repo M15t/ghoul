@@ -19,13 +19,19 @@ reload_server() {
     start_server
 }
 
-# Exit on ctrl-c (without this, ctrl-c would go to fswatch, causing it to
-# reload instead of exit):
-trap 'exit 0' SIGINT
 
-start_server
 
-while true; do
-    wait_for_changes
-    reload_server
-done
+if [[ $OSTYPE == 'darwin'* ]]; then
+    # Exit on ctrl-c (without this, ctrl-c would go to fswatch, causing it to
+    # reload instead of exit):
+    trap 'exit 0' SIGINT
+
+    start_server
+
+    while true; do
+        wait_for_changes
+        reload_server
+    done
+else
+    start_server
+fi

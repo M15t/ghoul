@@ -20,8 +20,8 @@ provision: depends ## Provision dev environment
 
 start: ## Bring up the server on dev environment
 	docker-compose up -d
-	scripts/waitdb.sh
-	scripts/watcher.sh
+	sh scripts/waitdb.sh
+	sh scripts/watcher.sh
 
 remove: ## Bring down the server on dev environment, remove all docker related stuffs as well
 	docker-compose down -v --remove-orphans
@@ -36,7 +36,7 @@ seed: ## Run database seeder
 	echo "To be done!"
 
 test: ## Run tests
-	scripts/test.sh
+	sh scripts/test.sh
 
 test.cover: test ## Run tests and open coverage statistics page
 	go tool cover -html=coverage-all.out
@@ -62,7 +62,7 @@ specs: ## Generate swagger specs
 	HOST=$(HOST) scripts/specs-gen.sh
 
 up: ## Execute `up` commands per env. Ex: make up dev "logs -f"
-	scripts/up.sh $(filter-out $@,$(MAKECMDGOALS))
+	sh scripts/up.sh $(filter-out $@,$(MAKECMDGOALS))
 
 dev.deploy: ## Deploy to DEV environment
 	scripts/apex.sh dev deploy --alias dev

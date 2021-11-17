@@ -8,7 +8,8 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/M15t/ghoul/pkg/server/middleware/secure"
+	"ghoul/pkg/server/middleware/secure"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"

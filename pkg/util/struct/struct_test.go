@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	structutil "github.com/M15t/ghoul/pkg/util/struct"
+	structutil "ghoul/pkg/util/struct"
 )
 
 func strPtr(s string) *string {

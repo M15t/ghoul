@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/M15t/ghoul/internal/functions/migration"
+	"ghoul/internal/functions/migration"
 )
 
 func main() {

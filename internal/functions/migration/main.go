@@ -5,12 +5,13 @@ import (
 	"os"
 	"time"
 
-	"github.com/M15t/ghoul/config"
-	"github.com/M15t/ghoul/internal/model"
-	dbutil "github.com/M15t/ghoul/internal/util/db"
-	"github.com/M15t/ghoul/pkg/util/crypter"
-	"github.com/M15t/ghoul/pkg/util/migration"
-	"gopkg.in/gormigrate.v1"
+	"ghoul/config"
+	"ghoul/internal/model"
+	dbutil "ghoul/internal/util/db"
+	"ghoul/pkg/util/crypter"
+	"ghoul/pkg/util/migration"
+
+	"github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"
 )
 
@@ -35,7 +36,8 @@ func Run() (respErr error) {
 	if err != nil {
 		return err
 	}
-	defer db.Close()
+	// connection.Close() is not available for GORM 1.20.0
+	// defer db.Close()
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -86,7 +88,7 @@ func Run() (respErr error) {
 					Role         string `gorm:"type:varchar(255)"`
 				}
 
-				if err := tx.Set("gorm:table_options", defaultTableOpts).AutoMigrate(&Country{}, &User{}).Error; err != nil {
+				if err := tx.Set("gorm:table_options", defaultTableOpts).AutoMigrate(&Country{}, &User{}); err != nil {
 					return err
 				}
 
@@ -138,7 +140,7 @@ func Run() (respErr error) {
 				return nil
 			},
 			Rollback: func(tx *gorm.DB) error {
-				return tx.DropTable("users", "countries").Error
+				return tx.Migrator().DropTable("users", "countries")
 			},
 		},
 	})

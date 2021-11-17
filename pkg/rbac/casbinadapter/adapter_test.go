@@ -4,11 +4,13 @@ import (
 	"log"
 	"testing"
 
-	"github.com/M15t/ghoul/pkg/rbac/casbinadapter"
+	"ghoul/pkg/rbac/casbinadapter"
+
 	"github.com/casbin/casbin"
 	"github.com/casbin/casbin/util"
+	"gorm.io/driver/sqlite"
+	_ "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	_ "gorm.io/gorm/dialects/sqlite"
 )
 
 func testGetPolicy(t *testing.T, e *casbin.Enforcer, res [][]string) {
@@ -108,11 +110,12 @@ func testAutoSave(t *testing.T, db *gorm.DB) {
 }
 
 func TestAdapters(t *testing.T) {
-	db, err := gorm.Open("sqlite3", "testdata/gorm.db")
+	db, err := gorm.Open(sqlite.Open("testdata/gorm.db"), &gorm.Config{})
 	if err != nil {
 		t.Fatalf("Error establishing connection %v", err)
 	}
-	defer db.Close()
+	// connection.Close() is not available for GORM 1.20.0
+	// db.Close()
 	db.AutoMigrate(&casbinadapter.CasbinRule{})
 
 	testSaveLoad(t, db)

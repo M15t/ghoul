@@ -3,11 +3,11 @@ package user
 import (
 	"net/http"
 
-	"github.com/M15t/ghoul/internal/model"
-	"github.com/M15t/ghoul/pkg/rbac"
-	"github.com/M15t/ghoul/pkg/server"
-	dbutil "github.com/M15t/ghoul/pkg/util/db"
-	structutil "github.com/M15t/ghoul/pkg/util/struct"
+	"ghoul/internal/model"
+	"ghoul/pkg/rbac"
+	"ghoul/pkg/server"
+	dbutil "ghoul/pkg/util/db"
+	structutil "ghoul/pkg/util/struct"
 )
 
 // Custom errors
@@ -60,7 +60,7 @@ func (s *User) View(authUsr *model.AuthUser, id int) (*model.User, error) {
 }
 
 // List returns list of users
-func (s *User) List(authUsr *model.AuthUser, lq *dbutil.ListQueryCondition, count *int) ([]*model.User, error) {
+func (s *User) List(authUsr *model.AuthUser, lq *dbutil.ListQueryCondition, count *int64) ([]*model.User, error) {
 	if err := s.enforce(authUsr, model.ActionViewAll); err != nil {
 		return nil, err
 	}
