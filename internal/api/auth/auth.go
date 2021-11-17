@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -36,8 +35,6 @@ func (s *Auth) LoginUser(u *model.User) (*model.AuthToken, error) {
 	if err != nil {
 		return nil, server.NewHTTPInternalError("Error updating user").SetInternal(err)
 	}
-
-	log.Println("Yoooooooooooooo")
 
 	return &model.AuthToken{AccessToken: token, TokenType: "bearer", ExpiresIn: expiresin, RefreshToken: refreshToken}, nil
 }
