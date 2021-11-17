@@ -7,10 +7,10 @@ require (
 	github.com/aws/aws-sdk-go v1.35.8
 	github.com/caarlos0/env/v5 v5.1.4
 	github.com/casbin/casbin v1.9.1
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fortytw2/dockertest v0.0.0-20181228171220-480d52efdffe
 	github.com/go-gormigrate/gormigrate/v2 v2.0.0
 	github.com/go-playground/validator/v10 v10.4.0
+	github.com/golang-jwt/jwt/v4 v4.1.0
 	github.com/imdatngo/gowhere v1.1.2
 	github.com/imdatngo/mergo v0.3.9
 	github.com/joho/godotenv v1.3.0
@@ -29,6 +29,7 @@ require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/denisenkom/go-mssqldb v0.0.0-20200910202707-1e08a3fab204 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-sql-driver/mysql v1.6.0 // indirect
