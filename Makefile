@@ -42,7 +42,7 @@ test.cover: test ## Run tests and open coverage statistics page
 	go tool cover -html=coverage-all.out
 
 build: clean ## Build the server binary file on host machine
-	scripts/build.sh
+	sh scripts/build.sh
 
 build.linux: ## Build the server binary file for Linux host
 	@$(MAKE) GOOS=linux GOARCH=amd64 build
@@ -59,7 +59,7 @@ clean: ## Clean up the built & test files
 	rm -rf ./server ./*.out
 
 specs: ## Generate swagger specs
-	HOST=$(HOST) scripts/specs-gen.sh
+	HOST=$(HOST) sh scripts/specs-gen.sh
 
 up: ## Execute `up` commands per env. Ex: make up dev "logs -f"
 	sh scripts/up.sh $(filter-out $@,$(MAKECMDGOALS))
