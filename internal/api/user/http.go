@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"strings"
 
-	"ghoul/internal/model"
-	"ghoul/pkg/server"
-	dbutil "ghoul/pkg/util/db"
-	httputil "ghoul/pkg/util/http"
+	"github.com/M15t/ghoul/internal/model"
+	"github.com/M15t/ghoul/pkg/server"
+	dbutil "github.com/M15t/ghoul/pkg/util/db"
+	httputil "github.com/M15t/ghoul/pkg/util/http"
 
 	"github.com/labstack/echo/v4"
 )

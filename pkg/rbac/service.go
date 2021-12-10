@@ -3,8 +3,8 @@ package rbac
 import (
 	"net/http"
 
-	"ghoul/pkg/rbac/casbinadapter"
-	"ghoul/pkg/server"
+	"github.com/M15t/ghoul/pkg/rbac/casbinadapter"
+	"github.com/M15t/ghoul/pkg/server"
 
 	"github.com/casbin/casbin"
 	"github.com/casbin/casbin/model"

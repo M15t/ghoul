@@ -1,7 +1,7 @@
 package dbutil
 
 import (
-	dbutil "ghoul/pkg/util/db"
+	dbutil "github.com/M15t/ghoul/pkg/util/db"
 
 	"github.com/imdatngo/gowhere"
 	_ "gorm.io/driver/mysql" // DB adapter

@@ -5,11 +5,11 @@ import (
 	"os"
 	"time"
 
-	"ghoul/config"
-	"ghoul/internal/model"
-	dbutil "ghoul/internal/util/db"
-	"ghoul/pkg/util/crypter"
-	"ghoul/pkg/util/migration"
+	"github.com/M15t/ghoul/config"
+	"github.com/M15t/ghoul/internal/model"
+	dbutil "github.com/M15t/ghoul/internal/util/db"
+	"github.com/M15t/ghoul/pkg/util/crypter"
+	"github.com/M15t/ghoul/pkg/util/migration"
 
 	"github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"

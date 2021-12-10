@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"ghoul/pkg/server/middleware/secure"
+	"github.com/M15t/ghoul/pkg/server/middleware/secure"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

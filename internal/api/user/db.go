@@ -1,8 +1,8 @@
 package user
 
 import (
-	"ghoul/internal/model"
-	dbutil "ghoul/pkg/util/db"
+	"github.com/M15t/ghoul/internal/model"
+	dbutil "github.com/M15t/ghoul/pkg/util/db"
 
 	"gorm.io/gorm"
 )

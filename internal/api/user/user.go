@@ -3,11 +3,11 @@ package user
 import (
 	"net/http"
 
-	"ghoul/internal/model"
-	"ghoul/pkg/rbac"
-	"ghoul/pkg/server"
-	dbutil "ghoul/pkg/util/db"
-	structutil "ghoul/pkg/util/struct"
+	"github.com/M15t/ghoul/internal/model"
+	"github.com/M15t/ghoul/pkg/rbac"
+	"github.com/M15t/ghoul/pkg/server"
+	dbutil "github.com/M15t/ghoul/pkg/util/db"
+	structutil "github.com/M15t/ghoul/pkg/util/struct"
 )
 
 // Custom errors

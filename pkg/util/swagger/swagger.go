@@ -1,7 +1,7 @@
 package swaggerutil
 
 import (
-	"ghoul/pkg/server"
+	"github.com/M15t/ghoul/pkg/server"
 )
 
 // Success empty response

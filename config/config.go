@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	cfgutil "ghoul/pkg/util/cfg"
+	cfgutil "github.com/M15t/ghoul/pkg/util/cfg"
 )
 
 // Configuration holds data necessery for configuring application

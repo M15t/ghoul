@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"ghoul/pkg/server"
+	"github.com/M15t/ghoul/pkg/server"
 
 	jwt "github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"

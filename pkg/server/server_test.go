@@ -3,7 +3,7 @@ package server_test
 import (
 	"testing"
 
-	"ghoul/pkg/server"
+	"github.com/M15t/ghoul/pkg/server"
 )
 
 // Improve tests

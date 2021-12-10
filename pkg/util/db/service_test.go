@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"testing"
 
-	dbutil "ghoul/pkg/util/db"
+	dbutil "github.com/M15t/ghoul/pkg/util/db"
 
 	"github.com/fortytw2/dockertest"
 	_ "gorm.io/driver/postgres" // DB adapter

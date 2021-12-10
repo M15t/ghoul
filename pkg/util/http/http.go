@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"strings"
 
-	"ghoul/pkg/server"
-	dbutil "ghoul/pkg/util/db"
+	"github.com/M15t/ghoul/pkg/server"
+	dbutil "github.com/M15t/ghoul/pkg/util/db"
 
 	"github.com/imdatngo/gowhere"
 	"github.com/labstack/echo/v4"

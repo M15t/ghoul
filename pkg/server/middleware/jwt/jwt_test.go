@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"ghoul/pkg/mock"
-	"ghoul/pkg/server"
-	"ghoul/pkg/server/middleware/jwt"
+	"github.com/M15t/ghoul/pkg/mock"
+	"github.com/M15t/ghoul/pkg/server"
+	"github.com/M15t/ghoul/pkg/server/middleware/jwt"
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"

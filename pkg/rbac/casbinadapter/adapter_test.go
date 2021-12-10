@@ -4,7 +4,7 @@ import (
 	"log"
 	"testing"
 
-	"ghoul/pkg/rbac/casbinadapter"
+	"github.com/M15t/ghoul/pkg/rbac/casbinadapter"
 
 	"github.com/casbin/casbin"
 	"github.com/casbin/casbin/util"

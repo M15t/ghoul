@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"ghoul/internal/model"
-	"ghoul/pkg/server"
+	"github.com/M15t/ghoul/internal/model"
+	"github.com/M15t/ghoul/pkg/server"
 
 	"github.com/labstack/echo/v4"
 )

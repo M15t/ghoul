@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"ghoul/internal/functions/migration"
+	"github.com/M15t/ghoul/internal/functions/migration"
 
 	"github.com/aws/aws-lambda-go/lambda"
 )
