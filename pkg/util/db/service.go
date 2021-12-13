@@ -12,7 +12,7 @@ import (
 )
 
 // New creates new database connection to the database server
-func New(dialect, dbPsn string, enableLog bool) (*gorm.DB, error) {
+func New(dialect, dbPsn string, cfg *gorm.Config, enableLog bool) (*gorm.DB, error) {
 	newLogger := logger.New(
 		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
 		logger.Config{
@@ -23,12 +23,12 @@ func New(dialect, dbPsn string, enableLog bool) (*gorm.DB, error) {
 		},
 	)
 
+	cfg.Logger = newLogger
+
 	db := new(gorm.DB)
 	switch dialect {
 	case "mysql":
-		db, err := gorm.Open(mysql.Open(dbPsn), &gorm.Config{
-			Logger: newLogger,
-		})
+		db, err := gorm.Open(mysql.Open(dbPsn), cfg)
 		if err != nil {
 			return nil, err
 		}
