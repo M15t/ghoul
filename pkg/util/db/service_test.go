@@ -1,43 +1,36 @@
-package dbutil_test
+package dbutil
 
 import (
-	"database/sql"
+	"reflect"
 	"testing"
 
-	dbutil "github.com/M15t/ghoul/pkg/util/db"
-
-	"github.com/fortytw2/dockertest"
-	_ "gorm.io/driver/postgres" // DB adapter
+	"gorm.io/gorm"
 )
 
-func TestDatabase(t *testing.T) {
-	container, err := dockertest.RunContainer("postgres:9.6", "5432", func(addr string) error {
-		db, err := sql.Open("postgres", "postgres://postgres:postgres@"+addr+"?sslmode=disable")
-		if err != nil {
-			return err
-		}
-
-		return db.Ping()
-	})
-	defer container.Shutdown()
-	if err != nil {
-		t.Fatalf("could not start postgres, %s", err)
+func TestNew(t *testing.T) {
+	type args struct {
+		dialect string
+		dbPsn   string
+		cfg     *gorm.Config
 	}
-
-	_, err = dbutil.New("postgres", "PSN", false)
-	if err == nil {
-		t.Error("Expected error")
+	tests := []struct {
+		name    string
+		args    args
+		want    *gorm.DB
+		wantErr bool
+	}{
+		// TODO: Add test cases.
 	}
-
-	_, err = dbutil.New("postgres", "postgres://postgres:postgres@localhost:1234/postgres?sslmode=disable", false)
-	if err == nil {
-		t.Error("Expected error")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := New(tt.args.dialect, tt.args.dbPsn, tt.args.cfg)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("New() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("New() = %v, want %v", got, tt.want)
+			}
+		})
 	}
-
-	_, err = dbutil.New("postgres", "postgres://postgres:postgres@"+container.Addr+"/postgres?sslmode=disable", true)
-	if err != nil {
-		t.Fatalf("Error establishing connection %v", err)
-	}
-	// connection.Close() is not available for GORM 1.20.0
-	// dbLogTest.Close()
 }

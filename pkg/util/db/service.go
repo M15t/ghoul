@@ -1,30 +1,13 @@
 package dbutil
 
 import (
-	"log"
-	"os"
-	"time"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
 )
 
 // New creates new database connection to the database server
-func New(dialect, dbPsn string, cfg *gorm.Config, enableLog bool) (*gorm.DB, error) {
-	newLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags), // io writer
-		logger.Config{
-			SlowThreshold:             time.Second,   // Slow SQL threshold
-			LogLevel:                  logger.Silent, // Log level
-			IgnoreRecordNotFoundError: true,          // Ignore ErrRecordNotFound error for logger
-			Colorful:                  false,         // Disable color
-		},
-	)
-
-	cfg.Logger = newLogger
-
+func New(dialect, dbPsn string, cfg *gorm.Config) (*gorm.DB, error) {
 	db := new(gorm.DB)
 	switch dialect {
 	case "mysql":
@@ -34,9 +17,7 @@ func New(dialect, dbPsn string, cfg *gorm.Config, enableLog bool) (*gorm.DB, err
 		}
 		return db, nil
 	case "postgres":
-		db, err := gorm.Open(postgres.Open(dbPsn), &gorm.Config{
-			Logger: newLogger,
-		})
+		db, err := gorm.Open(postgres.Open(dbPsn), cfg)
 		if err != nil {
 			return nil, err
 		}

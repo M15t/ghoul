@@ -16,7 +16,8 @@ func New(dbPsn string, enableLog bool) (*gorm.DB, error) {
 	// - gorm.DefaultTableNameHandler
 	// - gowhere.DefaultConfig
 	gowhere.DefaultConfig.Dialect = gowhere.DialectMySQL
-	return dbutil.New("mysql", dbPsn, enableLog)
+	config := new(gorm.Config)
+	return dbutil.New("mysql", dbPsn, config)
 
 	// EnablePostgreSQL: remove 2 lines above, uncomment the following
 	// return dbutil.New("postgres", dbPsn, enableLog)
