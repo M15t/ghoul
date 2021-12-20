@@ -7,7 +7,6 @@ require (
 	github.com/aws/aws-sdk-go v1.35.8
 	github.com/caarlos0/env/v5 v5.1.4
 	github.com/casbin/casbin v1.9.1
-	github.com/fortytw2/dockertest v0.0.0-20181228171220-480d52efdffe
 	github.com/go-gormigrate/gormigrate/v2 v2.0.0
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/golang-jwt/jwt/v4 v4.1.0

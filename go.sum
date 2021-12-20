@@ -27,8 +27,6 @@ github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSs
 github.com/denisenkom/go-mssqldb v0.0.0-20200428022330-06a60b6afbbc/go.mod h1:xbL0rPBG9cCiLr28tMa8zpbdarY27NDyej4t/EjAShU=
 github.com/denisenkom/go-mssqldb v0.0.0-20200910202707-1e08a3fab204 h1:tI48fqaIkxxYuIylVv1tdDfBp6836GKSfmmzgSyP1CY=
 github.com/denisenkom/go-mssqldb v0.0.0-20200910202707-1e08a3fab204/go.mod h1:xbL0rPBG9cCiLr28tMa8zpbdarY27NDyej4t/EjAShU=
-github.com/fortytw2/dockertest v0.0.0-20181228171220-480d52efdffe h1:ZcSBgsXKsiO+Fews6o2FvSJe35heZSNgmoBpU/3QcfU=
-github.com/fortytw2/dockertest v0.0.0-20181228171220-480d52efdffe/go.mod h1:ol2Uw1BXqkhdz68AoQkye2+HtieiGfwXbEOwRTRpOnU=
 github.com/go-gormigrate/gormigrate/v2 v2.0.0 h1:e2A3Uznk4viUC4UuemuVgsNnvYZyOA8B3awlYk3UioU=
 github.com/go-gormigrate/gormigrate/v2 v2.0.0/go.mod h1:YuVJ+D/dNt4HWrThTBnjgZuRbt7AuwINeg4q52ZE3Jw=
 github.com/go-kit/log v0.1.0/go.mod h1:zbhenjAZHb184qTLMA9ZjW7ThYL0H2mk7Q6pNt4vbaY=
