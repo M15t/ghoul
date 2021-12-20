@@ -39,6 +39,9 @@ func Run() (respErr error) {
 	// connection.Close() is not available for GORM 1.20.0
 	// defer db.Close()
 
+	sqlDB, err := db.DB()
+	defer sqlDB.Close()
+
 	defer func() {
 		if r := recover(); r != nil {
 			switch x := r.(type) {
