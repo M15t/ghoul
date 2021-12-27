@@ -10,7 +10,7 @@ require (
 	github.com/go-gormigrate/gormigrate/v2 v2.0.0
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/golang-jwt/jwt/v4 v4.1.0
-	github.com/imdatngo/gowhere v1.1.2
+	github.com/imdatngo/gowhere v1.1.3
 	github.com/imdatngo/mergo v0.3.9
 	github.com/joho/godotenv v1.3.0
 	github.com/labstack/echo/v4 v4.6.1
