@@ -9,10 +9,14 @@ import (
 	"time"
 
 	"github.com/M15t/ghoul/pkg/server/middleware/secure"
+	"github.com/aws/aws-lambda-go/events"
+	"github.com/aws/aws-lambda-go/lambda"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+
+	echoadapter "github.com/awslabs/aws-lambda-go-api-proxy/echo"
 )
 
 // Config represents server specific config
@@ -58,6 +62,8 @@ func (c *Config) fillDefaults() {
 	}
 }
 
+var echoLambda *echoadapter.EchoLambda
+
 // New instantates new Echo server
 func New(cfg *Config) *echo.Echo {
 	cfg.fillDefaults()
@@ -87,6 +93,11 @@ func healthCheck(c echo.Context) error {
 		"version":    version,
 		"build_time": buildTime,
 	})
+}
+
+func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	// If no name is provided in the HTTP request body, throw an error
+	return echoLambda.ProxyWithContext(ctx, req)
 }
 
 // Start starts echo server
@@ -119,5 +130,9 @@ func Start(e *echo.Echo, isDevelopment bool) {
 		e.HideBanner = true
 		e.HidePort = true
 		e.Logger.Fatal(e.StartServer(e.Server))
+
+		// User echo adapter for Lambda
+		echoLambda = echoadapter.New(e)
+		lambda.Start(handler)
 	}
 }
