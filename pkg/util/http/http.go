@@ -21,6 +21,15 @@ func ReqID(c echo.Context) (int, error) {
 	return id, nil
 }
 
+// ReqIDint64 returns id url parameter. Support int64
+func ReqIDint64(c echo.Context) (int64, error) {
+	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err != nil {
+		return 0, server.NewHTTPValidationError("Invalid ID")
+	}
+	return id, nil
+}
+
 // TrimSpacePointer trims leading and trailing spaces from a pointer string
 func TrimSpacePointer(s *string) *string {
 	if s == nil {
