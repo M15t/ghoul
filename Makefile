@@ -50,6 +50,9 @@ build.linux: ## Build the server binary file for Linux host
 build.windows: ## Build the server binary file for Windows host
 	@$(MAKE) GOOS=windows GOARCH=amd64 build
 
+build.arm: clean ## Build the server binary file for ARM host
+	GOOS=linux GOARCH=arm64 sh scripts/build-arm.sh
+
 install:
 	echo "Not ready yet!"
 	echo "To setup PostgreSQL, check 'scripts/install-pg.sh'"

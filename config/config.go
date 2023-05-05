@@ -9,7 +9,7 @@ import (
 
 // Configuration holds data necessery for configuring application
 type Configuration struct {
-	Stage        string   `env:"UP_STAGE"`
+	Stage        string   `env:"STAGE"`
 	Host         string   `env:"HOST"`
 	Port         int      `env:"PORT"`
 	ReadTimeout  int      `env:"READ_TIMEOUT"`
@@ -17,7 +17,7 @@ type Configuration struct {
 	AllowOrigins []string `env:"ALLOW_ORIGINS"`
 	Debug        bool     `env:"DEBUG"`
 	DbLog        bool     `env:"DB_LOG"`
-	DbPsn        string   `env:"DB_PSN"`
+	DbDsn        string   `env:"DB_DSN"`
 	JwtSecret    string   `env:"JWT_SECRET"`
 	JwtDuration  int      `env:"JWT_DURATION"`
 	JwtAlgorithm string   `env:"JWT_ALGORITHM"`
@@ -29,7 +29,7 @@ func Load() (*Configuration, error) {
 	if configname := os.Getenv("CONFIG_NAME"); configname != "" {
 		appName = configname
 	}
-	stage := os.Getenv("UP_STAGE")
+	stage := os.Getenv("STAGE")
 	if configstage := os.Getenv("CONFIG_STAGE"); configstage != "" {
 		stage = configstage
 	}

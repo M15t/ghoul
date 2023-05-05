@@ -32,7 +32,7 @@ func Run() (respErr error) {
 		return err
 	}
 
-	db, err := dbutil.New(cfg.DbPsn, false)
+	db, err := dbutil.New(cfg.DbDsn, false)
 	if err != nil {
 		return err
 	}
