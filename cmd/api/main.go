@@ -13,30 +13,30 @@
 //
 // Terms Of Service: N/A
 //
-//     Host: %{HOST}
-//     Version: 1.0.0
-//     Contact: M15t <khanhnguyen1411@gmail.com>
+//	Host: %{HOST}
+//	Version: 1.0.0
+//	Contact: M15t <khanhnguyen1411@gmail.com>
 //
-//     Consumes:
-//     - application/json
+//	Consumes:
+//	- application/json
 //
-//     Produces:
-//     - application/json
+//	Produces:
+//	- application/json
 //
-//     Security:
-//     - login: []
-//     - bearer: []
+//	Security:
+//	- login: []
+//	- bearer: []
 //
-//     SecurityDefinitions:
-//     login:
-//         type: oauth2
-//         tokenUrl: /login
-//         refreshUrl: /refresh
-//         flow: password
-//     bearer:
-//          type: apiKey
-//          name: Authorization
-//          in: header
+//	SecurityDefinitions:
+//	login:
+//	    type: oauth2
+//	    tokenUrl: /login
+//	    refreshUrl: /refresh
+//	    flow: password
+//	bearer:
+//	     type: apiKey
+//	     name: Authorization
+//	     in: header
 //
 // swagger:meta
 package main
@@ -58,7 +58,7 @@ func main() {
 	cfg, err := config.Load()
 	checkErr(err)
 
-	db, err := dbutil.New(cfg.DbPsn, cfg.DbLog)
+	db, err := dbutil.New(cfg.DbDsn, cfg.DbLog)
 	checkErr(err)
 	// connection.Close() is not available for GORM 1.20.0
 	// defer db.Close()
