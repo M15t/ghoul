@@ -129,9 +129,9 @@ func Start(e *echo.Echo, isDevelopment bool) {
 		// Hide verbose logs and start server normally
 		e.HideBanner = true
 		e.HidePort = true
-		e.Logger.Fatal(e.StartServer(e.Server))
+		// e.Logger.Fatal(e.StartServer(e.Server))
 
-		// User echo adapter for Lambda
+		// Use echo adapter for Lambda
 		echoLambda = echoadapter.New(e)
 		lambda.Start(handler)
 	}
