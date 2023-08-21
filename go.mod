@@ -18,6 +18,7 @@ require (
 	github.com/labstack/gommon v0.4.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/stretchr/testify v1.8.2
+	github.com/thoas/go-funk v0.9.3
 	golang.org/x/crypto v0.8.0
 	gorm.io/driver/mysql v1.5.0
 	gorm.io/driver/postgres v1.5.0

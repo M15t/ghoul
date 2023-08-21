@@ -120,10 +120,11 @@ func (cdb *DB) Update(db *gorm.DB, updates interface{}, cond ...interface{}) err
 func (cdb *DB) Delete(db *gorm.DB, cond ...interface{}) error {
 	if len(cond) == 1 {
 		val := reflect.ValueOf(cond[0])
-		if val.Kind() == reflect.Ptr {
+
+		switch val.Kind() {
+		case reflect.Ptr:
 			val = val.Elem()
-		}
-		if val.Kind() == reflect.Struct {
+		case reflect.Struct:
 			return db.Delete(cond[0]).Error
 		}
 	}

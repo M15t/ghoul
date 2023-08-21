@@ -2,8 +2,10 @@ package secure
 
 import (
 	"encoding/json"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/thoas/go-funk"
 )
 
 // Config represents secure specific config
@@ -44,7 +46,9 @@ func CORS(cfg *Config) echo.MiddlewareFunc {
 func BodyDump() echo.MiddlewareFunc {
 	return middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
 		secretFields := []string{"new_password", "old_password", "password", "access_token", "refresh_token"}
-		if len(reqBody) > 0 {
+		contentType := c.Request().Header.Get("Content-Type")
+
+		if len(reqBody) > 0 && contentType == "application/json" {
 			var bodymap map[string]interface{}
 			if err := json.Unmarshal(reqBody, &bodymap); err == nil {
 				for i := 0; i < len(secretFields); i++ {
@@ -53,6 +57,9 @@ func BodyDump() echo.MiddlewareFunc {
 					}
 				}
 				reqBody, _ = json.Marshal(bodymap)
+			}
+			if funk.ContainsString([]string{"Content-Disposition: form-data"}, string(reqBody)) {
+				c.Logger().Debug("Request Body: ", "multipart/form-data")
 			}
 			c.Logger().Debug("Request Body: ", string(reqBody))
 		}
@@ -66,6 +73,9 @@ func BodyDump() echo.MiddlewareFunc {
 					}
 				}
 				resBody, _ = json.Marshal(bodymap)
+			}
+			if funk.ContainsString([]string{"Content-Disposition: form-data"}, string(reqBody)) {
+				c.Logger().Debug("Request Body: ", "multipart/form-data")
 			}
 			c.Logger().Debug("Response Body: ", string(resBody))
 		}
