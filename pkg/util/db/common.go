@@ -119,15 +119,15 @@ func (cdb *DB) Update(db *gorm.DB, updates interface{}, cond ...interface{}) err
 // Delete deletes record matching given conditions.
 func (cdb *DB) Delete(db *gorm.DB, cond ...interface{}) error {
 	if len(cond) == 1 {
-		val := reflect.ValueOf(cond[0])
+		newCond := cond[0]
+		cType := reflect.TypeOf(newCond)
 
-		switch val.Kind() {
+		switch cType.Kind() {
 		case reflect.Ptr:
-			val = val.Elem()
-		case reflect.Struct:
-			return db.Delete(cond[0]).Error
+			return db.Delete(newCond).Error
 		}
 	}
+
 	where := ParseCond(cond...)
 	cdb.GDB = db.Delete(cdb.Model, where...)
 	return cdb.GDB.Error
