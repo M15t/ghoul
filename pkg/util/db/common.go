@@ -47,6 +47,8 @@ type Intf interface {
 	// CreateInBatches creates batch of new record on database.
 	// `input` must be a array non-nil pointer of the model. e.g: `input := []*model.User`
 	CreateInBatches(db *gorm.DB, input interface{}, batchSize int) error
+	// ParseCond returns standard [sqlString, vars] format for query, powered by gowhere package (with default config)
+	ParseCond(cond ...interface{}) []interface{}
 }
 
 // ListQueryCondition holds data used for db queries
@@ -65,7 +67,7 @@ func (cdb *DB) Create(db *gorm.DB, input interface{}) error {
 
 // View returns single record matching the given conditions.
 func (cdb *DB) View(db *gorm.DB, output interface{}, cond ...interface{}) error {
-	where := ParseCond(cond...)
+	where := parseCond(cond...)
 	cdb.GDB = db.First(output, where...)
 	return cdb.GDB.Error
 }
@@ -109,7 +111,7 @@ func (cdb *DB) List(db *gorm.DB, output interface{}, lq *ListQueryCondition, cou
 func (cdb *DB) Update(db *gorm.DB, updates interface{}, cond ...interface{}) error {
 	db = db.Model(cdb.Model)
 	if len(cond) > 0 {
-		where := ParseCond(cond...)
+		where := parseCond(cond...)
 		db = db.Where(where[0], where[1:]...)
 	}
 	cdb.GDB = db.Omit("id").Updates(updates)
@@ -128,7 +130,7 @@ func (cdb *DB) Delete(db *gorm.DB, cond ...interface{}) error {
 		}
 	}
 
-	where := ParseCond(cond...)
+	where := parseCond(cond...)
 	cdb.GDB = db.Delete(cdb.Model, where...)
 	return cdb.GDB.Error
 }
@@ -137,7 +139,7 @@ func (cdb *DB) Delete(db *gorm.DB, cond ...interface{}) error {
 func (cdb *DB) Exist(db *gorm.DB, cond ...interface{}) (bool, error) {
 	var count int64
 	count = 0
-	where := ParseCond(cond...)
+	where := parseCond(cond...)
 	cdb.GDB = db.Model(cdb.Model).Where(where[0], where[1:]...).Count(&count)
 	return count > 0, cdb.GDB.Error
 }
@@ -146,4 +148,9 @@ func (cdb *DB) Exist(db *gorm.DB, cond ...interface{}) (bool, error) {
 func (cdb *DB) CreateInBatches(db *gorm.DB, input interface{}, batchSize int) error {
 	cdb.GDB = db.CreateInBatches(input, batchSize)
 	return cdb.GDB.Error
+}
+
+// ParseCond returns standard [sqlString, vars] format for query, powered by gowhere package (configurable version)
+func (cdb *DB) ParseCond(cond ...interface{}) []interface{} {
+	return parseCond(cond...)
 }

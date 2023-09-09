@@ -7,8 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// ParseCondWithConfig returns standard [sqlString, vars] format for query, powered by gowhere package (configurable version)
-func ParseCondWithConfig(cfg gowhere.Config, cond ...interface{}) []interface{} {
+// parseCondWithConfig returns standard [sqlString, vars] format for query, powered by gowhere package (configurable version)
+func parseCondWithConfig(cfg gowhere.Config, cond ...interface{}) []interface{} {
 	if len(cond) == 1 {
 		switch c := cond[0].(type) {
 		case map[string]interface{}, []interface{}:
@@ -22,9 +22,9 @@ func ParseCondWithConfig(cfg gowhere.Config, cond ...interface{}) []interface{} 
 	return cond
 }
 
-// ParseCond returns standard [sqlString, vars] format for query, powered by gowhere package (with default config)
-func ParseCond(cond ...interface{}) []interface{} {
-	return ParseCondWithConfig(gowhere.DefaultConfig, cond...)
+// parseCond returns standard [sqlString, vars] format for query, powered by gowhere package (with default config)
+func parseCond(cond ...interface{}) []interface{} {
+	return parseCondWithConfig(gowhere.DefaultConfig, cond...)
 }
 
 // InTransaction defines the transaction wrapper function

@@ -45,7 +45,7 @@ func CORS(cfg *Config) echo.MiddlewareFunc {
 // BodyDump prints out the request body for debugging purpose
 func BodyDump() echo.MiddlewareFunc {
 	return middleware.BodyDump(func(c echo.Context, reqBody, resBody []byte) {
-		secretFields := []string{"new_password", "old_password", "password", "access_token", "refresh_token"}
+		secretFields := []string{"new_password", "old_password", "password", "access_token", "refresh_token", "firebase_token"}
 		contentType := c.Request().Header.Get("Content-Type")
 
 		if len(reqBody) > 0 && contentType == "application/json" {
