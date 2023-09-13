@@ -2,6 +2,7 @@ package secure
 
 import (
 	"encoding/json"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -80,4 +81,58 @@ func BodyDump() echo.MiddlewareFunc {
 			c.Logger().Debug("Response Body: ", string(resBody))
 		}
 	})
+}
+
+// DisableCache sets the Cache-Control directive to no-store.
+func DisableCache() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) (err error) {
+			c.Response().Header().Set("Cache-Control", "no-store")
+			return next(c)
+		}
+	}
+}
+
+// SimpleCORS returns a CORS middleware with minimum configurations. Preflighted request is not allowed though.
+func SimpleCORS(allowOrigins []string) echo.MiddlewareFunc {
+	if len(allowOrigins) == 0 {
+		allowOrigins = []string{"*"}
+	}
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			req := c.Request()
+			res := c.Response()
+
+			// Check allowed origins
+			origin := req.Header.Get(echo.HeaderOrigin)
+			allowed := ""
+			for _, o := range allowOrigins {
+				if o == "*" || o == origin {
+					allowed = o
+					break
+				}
+			}
+
+			// Simple request
+			switch req.Method {
+			case http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete:
+				res.Header().Add(echo.HeaderVary, echo.HeaderOrigin)
+				res.Header().Set(echo.HeaderAccessControlAllowOrigin, allowed)
+				return next(c)
+			}
+
+			// Preflight request is only allowed when "all" origins are allowed
+			if req.Method == http.MethodOptions && allowed == "*" {
+				res.Header().Add(echo.HeaderVary, echo.HeaderOrigin)
+				res.Header().Add(echo.HeaderVary, echo.HeaderAccessControlRequestMethod)
+				res.Header().Add(echo.HeaderVary, echo.HeaderAccessControlRequestHeaders)
+				res.Header().Set(echo.HeaderAccessControlAllowOrigin, "*")
+				res.Header().Set(echo.HeaderAccessControlAllowMethods, "*")
+				res.Header().Set(echo.HeaderAccessControlAllowHeaders, "*")
+				return c.NoContent(http.StatusNoContent)
+			}
+
+			return echo.ErrMethodNotAllowed
+		}
+	}
 }
