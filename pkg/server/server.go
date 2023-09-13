@@ -62,7 +62,7 @@ func (c *Config) fillDefaults() {
 	}
 }
 
-var echoLambda *echoadapter.EchoLambda
+var echoLambda *echoadapter.EchoLambdaV2
 
 // New instantates new Echo server
 func New(cfg *Config) *echo.Echo {
@@ -95,7 +95,7 @@ func healthCheck(c echo.Context) error {
 	})
 }
 
-func handler(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 	// If no name is provided in the HTTP request body, throw an error
 	return echoLambda.ProxyWithContext(ctx, req)
 }
@@ -132,7 +132,7 @@ func Start(e *echo.Echo, isDevelopment bool) {
 		// e.Logger.Fatal(e.StartServer(e.Server))
 
 		// Use echo adapter for Lambda
-		echoLambda = echoadapter.New(e)
+		echoLambda = echoadapter.NewV2(e)
 		lambda.Start(handler)
 	}
 }
