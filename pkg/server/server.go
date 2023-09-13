@@ -39,9 +39,6 @@ var (
 		Debug:        true,
 		AllowOrigins: []string{"*"},
 	}
-
-	version   = "dev" // sha1 revision used to build the server
-	buildTime = "now" // when the server was built
 )
 
 func (c *Config) fillDefaults() {
@@ -64,12 +61,15 @@ func (c *Config) fillDefaults() {
 
 var echoLambda *echoadapter.EchoLambdaV2
 
+func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+	// If no name is provided in the HTTP request body, throw an error
+	return echoLambda.ProxyWithContext(ctx, req)
+}
+
 // New instantates new Echo server
 func New(cfg *Config) *echo.Echo {
 	cfg.fillDefaults()
 	e := echo.New()
-	e.Use(middleware.Logger(), middleware.Recover(), secure.Headers(), secure.CORS(&secure.Config{AllowOrigins: cfg.AllowOrigins}))
-	e.GET("/", healthCheck)
 	e.Validator = NewValidator()
 	e.HTTPErrorHandler = NewErrorHandler(e).Handle
 	e.Binder = NewBinder()
@@ -84,24 +84,16 @@ func New(cfg *Config) *echo.Echo {
 	e.Server.ReadTimeout = time.Duration(cfg.ReadTimeout) * time.Minute
 	e.Server.WriteTimeout = time.Duration(cfg.WriteTimeout) * time.Minute
 
+	e.Use(middleware.Logger(), middleware.Recover(), secure.Headers(), secure.CORS(&secure.Config{AllowOrigins: cfg.AllowOrigins}))
+
 	return e
-}
-
-func healthCheck(c echo.Context) error {
-	return c.JSON(http.StatusOK, map[string]interface{}{
-		"status":     "ok",
-		"version":    version,
-		"build_time": buildTime,
-	})
-}
-
-func handler(ctx context.Context, req events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
-	// If no name is provided in the HTTP request body, throw an error
-	return echoLambda.ProxyWithContext(ctx, req)
 }
 
 // Start starts echo server
 func Start(e *echo.Echo, isDevelopment bool) {
+	// hide verbose logs
+	e.HideBanner = true
+
 	// graceful shutdown for dev environment
 	if isDevelopment {
 		// Start server
@@ -123,11 +115,11 @@ func Start(e *echo.Echo, isDevelopment bool) {
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 		if err := e.Shutdown(ctx); err != nil {
-			e.Logger.Fatal(err)
+			// Error from closing listeners, or context timeout:
+			fmt.Printf("⇨ http server shutting down error: %v\n", err)
 		}
 	} else {
 		// Hide verbose logs and start server normally
-		e.HideBanner = true
 		e.HidePort = true
 		// e.Logger.Fatal(e.StartServer(e.Server))
 
