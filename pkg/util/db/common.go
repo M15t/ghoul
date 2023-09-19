@@ -126,7 +126,8 @@ func (cdb *DB) Delete(db *gorm.DB, cond ...interface{}) error {
 
 		switch cType.Kind() {
 		case reflect.Ptr:
-			return db.Delete(cdb.Model, newCond).Error
+			where := parseCond(cond...)
+			return db.Delete(newCond, where...).Error
 		}
 	}
 
