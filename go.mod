@@ -19,7 +19,7 @@ require (
 	github.com/segmentio/ksuid v1.0.4
 	github.com/stretchr/testify v1.8.2
 	github.com/thoas/go-funk v0.9.3
-	golang.org/x/crypto v0.8.0
+	golang.org/x/crypto v0.17.0
 	gorm.io/driver/mysql v1.5.0
 	gorm.io/driver/postgres v1.5.0
 	gorm.io/driver/sqlite v1.5.0
@@ -46,9 +46,9 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
-	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
-	golang.org/x/text v0.9.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

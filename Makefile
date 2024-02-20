@@ -9,19 +9,22 @@ help: ## Display this help message
 	@perl -nle'print $& if m{^[\.a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m  %-25s\033[0m %s\n", $$1, $$2}'
 
 depends: ## Install & build dependencies
-	go get ./...
-	go build ./...
-	go mod tidy
+	go mod download
 
 provision: depends ## Provision dev environment
 	docker-compose up -d
-	scripts/waitdb.sh
-	@$(MAKE) migrate
-
-start: ## Bring up the server on dev environment
-	docker-compose up -d
 	sh scripts/waitdb.sh
-	sh scripts/watcher.sh
+	@$(MAKE) migrate specs
+
+start: docker.up ## Bring up the server on dev environment
+	sh scripts/waitdb.sh
+	air
+
+docker.down: ## Bring down the server on dev environment, remove all docker related stuffs as well
+	docker-compose down -v --remove-orphans
+
+docker.up: ## Bring up the docker container
+	docker-compose up -d
 
 remove: ## Bring down the server on dev environment, remove all docker related stuffs as well
 	docker-compose down -v --remove-orphans
@@ -63,29 +66,6 @@ clean: ## Clean up the built & test files
 
 specs: ## Generate swagger specs
 	HOST=$(HOST) sh scripts/specs-gen.sh
-
-up: ## Execute `up` commands per env. Ex: make up dev "logs -f"
-	sh scripts/up.sh $(filter-out $@,$(MAKECMDGOALS))
-
-dev.deploy: ## Deploy to DEV environment
-	scripts/apex.sh dev deploy --alias dev
-	scripts/apex.sh dev invoke --alias dev migration
-	scripts/up.sh dev deploy dev
-
-demo.deploy: ## Deploy to DEMO environment
-	scripts/apex.sh dev deploy --alias demo
-	scripts/apex.sh dev invoke --alias demo migration
-	scripts/up.sh dev deploy demo
-
-stg.deploy: ## Deploy to STAGING environment
-	scripts/apex.sh client deploy --alias staging
-	scripts/apex.sh client invoke --alias staging migration
-	scripts/up.sh client deploy staging
-
-prod.deploy: ## Deploy to PROD environment
-	scripts/apex.sh client deploy --alias production
-	scripts/apex.sh client invoke --alias production migration
-	scripts/up.sh client deploy production
 
 %: # prevent error for `up` target when passing arguments
 ifeq ($(filter up,$(MAKECMDGOALS)),up)
