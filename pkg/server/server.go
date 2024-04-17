@@ -14,7 +14,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
 
 	echoadapter "github.com/awslabs/aws-lambda-go-api-proxy/echo"
 )
@@ -74,17 +73,17 @@ func New(cfg *Config) *echo.Echo {
 	e.HTTPErrorHandler = NewErrorHandler(e).Handle
 	e.Binder = NewBinder()
 	e.Debug = cfg.Debug
-	if e.Debug {
-		e.Logger.SetLevel(log.DEBUG)
-		e.Use(secure.BodyDump())
-	} else {
-		e.Logger.SetLevel(log.ERROR)
-	}
+	// if e.Debug {
+	// 	e.Logger.SetLevel(log.DEBUG)
+	// 	e.Use(secure.BodyDump())
+	// } else {
+	// 	e.Logger.SetLevel(log.ERROR)
+	// }
 	e.Server.Addr = fmt.Sprintf(":%d", cfg.Port)
 	e.Server.ReadTimeout = time.Duration(cfg.ReadTimeout) * time.Minute
 	e.Server.WriteTimeout = time.Duration(cfg.WriteTimeout) * time.Minute
 
-	e.Use(middleware.Logger(), middleware.Recover(), secure.Headers(), secure.CORS(&secure.Config{AllowOrigins: cfg.AllowOrigins}))
+	e.Use(middleware.Recover(), secure.Headers(), secure.CORS(&secure.Config{AllowOrigins: cfg.AllowOrigins}))
 
 	return e
 }

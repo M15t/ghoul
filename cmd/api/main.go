@@ -42,6 +42,9 @@
 package main
 
 import (
+	"log/slog"
+	"os"
+
 	"github.com/M15t/ghoul/config"
 	"github.com/M15t/ghoul/internal/api/auth"
 	"github.com/M15t/ghoul/internal/api/country"
@@ -51,6 +54,7 @@ import (
 	_ "github.com/M15t/ghoul/internal/util/swagger" // Swagger stuffs
 	"github.com/M15t/ghoul/pkg/server"
 	"github.com/M15t/ghoul/pkg/server/middleware/jwt"
+	"github.com/M15t/ghoul/pkg/server/middleware/slogger"
 	"github.com/M15t/ghoul/pkg/util/crypter"
 )
 
@@ -58,7 +62,11 @@ func main() {
 	cfg, err := config.Load()
 	checkErr(err)
 
-	db, err := dbutil.New(cfg.DbDsn, cfg.DbLog)
+	// Create a slog logger, which:
+	//   - Logs to stdout.
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+	db, err := dbutil.New(cfg.DbDsn, logger)
 	checkErr(err)
 	// connection.Close() is not available for GORM 1.20.0
 	// defer db.Close()
@@ -76,8 +84,19 @@ func main() {
 		Debug:        cfg.Debug,
 	})
 
+	// Middleware
+	filters := make([]slogger.Filter, 0)
+	filters = append(filters, slogger.IgnorePathContains("swagger"))
+
+	e.Use(slogger.NewWithConfig(logger, slogger.Config{
+		WithUserAgent:    true,
+		WithRequestBody:  true,
+		WithResponseBody: true,
+		Filters:          filters,
+	}))
+
 	// Static page for Swagger API specs
-	e.Static("/swaggerui", "swaggerui")
+	e.Static("/swagger-ui", "swaggerui")
 
 	// Initialize DB interfaces
 	userDB := user.NewDB()

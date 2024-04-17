@@ -1,19 +1,10 @@
 version: "3"
 services:
   db:
-    image: mysql:5.6
+    image: mysql:8
     container_name: ghoul-api.db
     ports:
       - "3306:3306"
-    command:
-      - --character-set-server=utf8mb4
-      - --character-set-client=utf8mb4
-      - --collation-server=utf8mb4_unicode_ci
-      - --character-set-client-handshake=OFF
-      - --innodb-large-prefix=ON
-      - --innodb-file-per-table=ON
-      - --innodb-file-format=Barracuda
-      - --innodb-file-format-max=Barracuda
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: ghoul
@@ -22,7 +13,6 @@ services:
       TZ: UTC
     volumes:
       - db-data:/var/lib/mysql
-
   # EnablePostgreSQL: remove the db service above, uncomment the following
   # db:
   #   image: postgres:9.6

@@ -2,6 +2,7 @@ package migration
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"time"
 
@@ -32,7 +33,11 @@ func Run() (respErr error) {
 		return err
 	}
 
-	db, err := dbutil.New(cfg.DbDsn, false)
+	// Create a slog logger, which:
+	//   - Logs to stdout.
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
+	db, err := dbutil.New(cfg.DbDsn, logger)
 	if err != nil {
 		return err
 	}
