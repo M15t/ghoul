@@ -6,29 +6,30 @@ import (
 	"strings"
 )
 
-func censorSecerts(uri string, body map[string]interface{}, secrets []string) map[string]interface{} {
-	for key, val := range body {
-		found := false
-		lowerkey := strings.ToLower(key)
-		for _, secretKey := range secrets {
-			if secretKey == lowerkey || strings.Contains(lowerkey, secretKey) {
-				found = true
-				break
+func secureBody(body interface{}, sensitiveKeys []string) {
+	switch v := body.(type) {
+	case map[string]interface{}:
+		for key, value := range v {
+			if containsSensitiveKey(key, sensitiveKeys) {
+				v[key] = "******"
+			} else {
+				secureBody(value, sensitiveKeys)
 			}
 		}
-		if found {
-			body[key] = "***"
-			continue
-		}
-
-		switch v := val.(type) {
-		case map[string]interface{}:
-			body[key] = censorSecerts(uri, v, secrets)
-			continue
+	case []interface{}:
+		for _, value := range v {
+			secureBody(value, sensitiveKeys)
 		}
 	}
+}
 
-	return body
+func containsSensitiveKey(key string, sensitiveKeys []string) bool {
+	for _, sensitiveKey := range sensitiveKeys {
+		if strings.Contains(strings.ToLower(key), strings.ToLower(sensitiveKey)) {
+			return true
+		}
+	}
+	return false
 }
 
 func prettyJSON(jsonData []byte) map[string]interface{} {
@@ -37,6 +38,8 @@ func prettyJSON(jsonData []byte) map[string]interface{} {
 	if err != nil {
 		fmt.Println("Error decoding JSON:", err)
 	}
+
+	secureBody(data, sensitiveKeys)
 
 	return data
 }

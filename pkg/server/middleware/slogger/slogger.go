@@ -1,25 +1,27 @@
 package slogger
 
 import (
-	"encoding/json"
 	"errors"
-	"log"
 	"log/slog"
 	"net/http"
 	"strings"
 	"time"
 
+	dblogger "github.com/M15t/ghoul/pkg/util/db/logger"
+	"github.com/M15t/ghoul/pkg/util/threadsafe"
 	"github.com/labstack/echo/v4"
 	"github.com/samber/lo"
 	"go.opentelemetry.io/otel/trace"
 )
 
+// custom
 const (
 	customAttributesCtxKey = "slog-echo.custom-attributes"
 )
 
 // custom var
 var (
+	timeFormat          = "Jan 02 15:04:05.000"
 	RequestBodyMaxSize  = 64 * 1024 // 64KB
 	ResponseBodyMaxSize = 64 * 1024 // 64KB
 
@@ -35,7 +37,7 @@ var (
 		"set-cookie": {},
 	}
 
-	secretFields = []string{"password", "key", "token", "cert", "username", "email", "phone", "mobile"}
+	sensitiveKeys = []string{"password", "key", "token", "username", "email", "phone", "mobile"}
 )
 
 // Config provide configurations
@@ -52,6 +54,7 @@ type Config struct {
 	WithResponseHeader bool
 	WithSpanID         bool
 	WithTraceID        bool
+	WithDBQueries      bool
 
 	Filters []Filter
 }
@@ -74,6 +77,7 @@ func New(logger *slog.Logger) echo.MiddlewareFunc {
 		WithResponseHeader: false,
 		WithSpanID:         false,
 		WithTraceID:        false,
+		WithDBQueries:      false,
 
 		Filters: []Filter{},
 	})
@@ -97,6 +101,7 @@ func NewWithFilters(logger *slog.Logger, filters ...Filter) echo.MiddlewareFunc 
 		WithResponseHeader: false,
 		WithSpanID:         false,
 		WithTraceID:        false,
+		WithDBQueries:      false,
 
 		Filters: filters,
 	})
@@ -111,6 +116,12 @@ func NewWithConfig(logger *slog.Logger, config Config) echo.MiddlewareFunc {
 			start := time.Now()
 			path := req.URL.Path
 			query := req.URL.RawQuery
+
+			ctx := req.Context()
+			dbWriter := threadsafe.NewSimpleSlice([]string{})
+			ctx = dblogger.WithContextGormLogger(ctx, dbWriter)
+			// Replace the existing context in the request
+			c.SetRequest(c.Request().WithContext(ctx))
 
 			params := map[string]string{}
 			for i, k := range c.ParamNames() {
@@ -133,13 +144,10 @@ func NewWithConfig(logger *slog.Logger, config Config) echo.MiddlewareFunc {
 
 			status := res.Status
 			method := req.Method
-			host := req.Host
-			route := c.Path()
 			end := time.Now()
 			latency := end.Sub(start)
 			userAgent := req.UserAgent()
 			ip := c.RealIP()
-			referer := c.Request().Referer()
 
 			httpErr := new(echo.HTTPError)
 			if err != nil && errors.As(err, &httpErr) {
@@ -149,22 +157,20 @@ func NewWithConfig(logger *slog.Logger, config Config) echo.MiddlewareFunc {
 				}
 			}
 
-			baseAttributes := []slog.Attr{}
+			baseAttributes := []slog.Attr{
+				slog.String("method", method),
+				slog.String("path", path),
+				slog.Int("status", status),
+				slog.String("latency", latency.String()),
+			}
 
 			requestAttributes := []slog.Attr{
-				slog.Time("time", start),
-				slog.String("method", method),
-				slog.String("host", host),
-				slog.String("path", path),
-				slog.String("route", route),
+				slog.String("time", start.Format(timeFormat)),
 				slog.String("ip", ip),
-				slog.String("ref", referer),
 			}
 
 			responseAttributes := []slog.Attr{
-				slog.Time("time", end),
-				slog.Duration("latency", latency),
-				slog.Int("status", status),
+				slog.String("time", end.Format(timeFormat)),
 			}
 
 			if config.WithRequestID {
@@ -195,17 +201,18 @@ func NewWithConfig(logger *slog.Logger, config Config) echo.MiddlewareFunc {
 				baseAttributes = append(baseAttributes, slog.String("span-id", spanID))
 			}
 
+			// db queries
+			if config.WithDBQueries {
+				if len(dbWriter.All()) > 0 {
+					baseAttributes = append(baseAttributes, slog.Any("queries", dbWriter.All()))
+				}
+			}
+
 			// request body
-			requestAttributes = append(requestAttributes, slog.Int("length", br.bytes))
 			if config.WithRequestBody {
 				// proceed body dump
 				reqBody := br.body.Bytes()
 				if strings.Contains(c.Request().Header.Get("Content-Type"), "application/json") && len(reqBody) > 0 {
-					var bodymap map[string]interface{}
-					if err := json.Unmarshal(reqBody, &bodymap); err == nil {
-						bodymap = censorSecerts(c.Request().URL.String(), bodymap, secretFields)
-						reqBody, _ = json.Marshal(bodymap)
-					}
 					requestAttributes = append(requestAttributes, slog.Any("body", prettyJSON(reqBody)))
 				}
 			}
@@ -237,20 +244,11 @@ func NewWithConfig(logger *slog.Logger, config Config) echo.MiddlewareFunc {
 			}
 
 			// response body body
-			responseAttributes = append(responseAttributes, slog.Int("length", bw.bytes))
 			if config.WithResponseBody {
 				// proceed body dump
 				resBody := bw.body.Bytes()
 
 				if strings.Contains(c.Response().Header().Get("Content-Type"), "application/json") && len(resBody) > 0 {
-					var bodymap map[string]interface{}
-					if err := json.Unmarshal(resBody, &bodymap); err == nil {
-						bodymap = censorSecerts(c.Request().URL.String(), bodymap, secretFields)
-						resBody, _ = json.Marshal(bodymap)
-					} else {
-						log.Panic(err)
-					}
-
 					responseAttributes = append(responseAttributes, slog.Any("body", prettyJSON(resBody)))
 				}
 			}
@@ -269,19 +267,21 @@ func NewWithConfig(logger *slog.Logger, config Config) echo.MiddlewareFunc {
 				responseAttributes = append(responseAttributes, slog.Group("header", kv...))
 			}
 
-			attributes := append(
-				[]slog.Attr{
-					{
-						Key:   "request",
-						Value: slog.GroupValue(requestAttributes...),
-					},
-					{
-						Key:   "response",
-						Value: slog.GroupValue(responseAttributes...),
-					},
-				},
-				baseAttributes...,
-			)
+			attributes := baseAttributes
+
+			if config.WithRequestBody {
+				attributes = append(attributes, slog.Attr{
+					Key:   "request",
+					Value: slog.GroupValue(requestAttributes...),
+				})
+			}
+
+			if config.WithResponseBody {
+				attributes = append(attributes, slog.Attr{
+					Key:   "response",
+					Value: slog.GroupValue(responseAttributes...),
+				})
+			}
 
 			// custom context values
 			if v := c.Get(customAttributesCtxKey); v != nil {
@@ -298,7 +298,7 @@ func NewWithConfig(logger *slog.Logger, config Config) echo.MiddlewareFunc {
 			}
 
 			level := config.DefaultLevel
-			msg := "Incoming Request"
+			msg := "OK"
 			if status >= http.StatusInternalServerError {
 				level = config.ServerErrorLevel
 				if err != nil {
@@ -308,11 +308,7 @@ func NewWithConfig(logger *slog.Logger, config Config) echo.MiddlewareFunc {
 				}
 			} else if status >= http.StatusBadRequest && status < http.StatusInternalServerError {
 				level = config.ClientErrorLevel
-				if err != nil {
-					msg = err.Error()
-				} else {
-					msg = http.StatusText(status)
-				}
+				msg = http.StatusText(status)
 			}
 
 			logger.LogAttrs(c.Request().Context(), level, msg, attributes...)
