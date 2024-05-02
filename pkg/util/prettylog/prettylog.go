@@ -32,14 +32,11 @@ func (h *Handler) WithGroup(name string) slog.Handler {
 // Handle is a method of the Handler struct that handles a slog.Record and returns an error
 func (h *Handler) Handle(ctx context.Context, r slog.Record) error {
 	baseAttributes := h.processBaseAttrs(ctx, r)
-	switch h.handlerType {
-	case "json":
+	if h.format == JSONFormat {
 		return h.handleJSON(baseAttributes)
-	case "text":
-		return h.handleText(baseAttributes)
-	default:
-		return fmt.Errorf("unknown handler type: %s", h.handlerType)
 	}
+
+	return h.handleText(baseAttributes)
 }
 
 func (h *Handler) processBaseAttrs(ctx context.Context, r slog.Record) baseAttributes {
