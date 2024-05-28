@@ -22,10 +22,10 @@ type LogType int
 
 // custom
 const (
-	Parallel LogType = iota
-	Stdout
-	JSON
-	Smart
+	Debug LogType = iota
+	Info
+	Warning
+	Error
 )
 
 var gormCtxKey = struct{}{}
