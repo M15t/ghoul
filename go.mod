@@ -11,7 +11,7 @@ require (
 	github.com/casbin/casbin v1.9.1
 	github.com/go-gormigrate/gormigrate/v2 v2.1.1
 	github.com/go-playground/validator/v10 v10.16.0
-	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/imdatngo/gowhere v1.1.3
 	github.com/imdatngo/mergo v0.3.12
 	github.com/imdatngo/slog-gorm v1.0.0
@@ -26,7 +26,7 @@ require (
 	golang.org/x/crypto v0.23.0
 	gorm.io/driver/mysql v1.5.6
 	gorm.io/driver/postgres v1.5.7
-	gorm.io/driver/sqlite v1.5.4
+	gorm.io/driver/sqlite v1.5.5
 	gorm.io/gorm v1.25.9
 )
 
