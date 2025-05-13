@@ -2,8 +2,6 @@ module github.com/M15t/ghoul
 
 go 1.24.3
 
-toolchain go1.23.6
-
 require (
 	github.com/M15t/gram v0.0.8
 	github.com/aws/aws-lambda-go v1.41.0
